@@ -16,53 +16,46 @@ import argparse
 parser = argparse.ArgumentParser()
 
 parser.add_argument(
-    "--dataset", 
-    type=str, 
-    default="HumanEval", 
+    "--dataset",
+    type=str,
+    default="HumanEval",
     choices=[
-        "HumanEval", 
-        "MBPP", 
+        "HumanEval",
+        "MBPP",
         "APPS",
-        "xCodeEval", 
-        "CC", 
-    ]
+        "xCodeEval",
+        "CC",
+    ],
 )
 parser.add_argument(
-    "--strategy", 
-    type=str, 
-    default="MapCoder", 
+    "--strategy",
+    type=str,
+    default="MapCoder",
     choices=[
         "Direct",
         "CoT",
         "SelfPlanning",
         "Analogical",
         "MapCoder",
-    ]
+    ],
 )
 parser.add_argument(
-    "--model", 
-    type=str, 
-    default="ChatGPT", 
+    "--model",
+    type=str,
+    default="ChatGPT",
     choices=[
         "ChatGPT",
         "GPT4",
         "Gemini",
-    ]
+        "Codellama",
+    ],
 )
+parser.add_argument("--temperature", type=float, default=0)
+parser.add_argument("--pass_at_k", type=int, default=1)
 parser.add_argument(
-    "--temperature", 
-    type=float, 
-    default=0
-)
-parser.add_argument(
-    "--pass_at_k", 
-    type=int, 
-    default=1
-)
-parser.add_argument(
-    "--language", 
-    type=str, 
-    default="Python3", 
+    "--language",
+    type=str,
+    default="Python3",
     choices=[
         "C",
         "C#",
@@ -72,7 +65,7 @@ parser.add_argument(
         "Python3",
         "Ruby",
         "Rust",
-    ]
+    ],
 )
 
 args = parser.parse_args()
@@ -87,7 +80,9 @@ LANGUAGE = args.language
 RUN_NAME = f"{MODEL_NAME}-{STRATEGY}-{DATASET}-{LANGUAGE}-{TEMPERATURE}-{PASS_AT_K}"
 RESULTS_PATH = f"./outputs/{RUN_NAME}.jsonl"
 
-print(f"#########################\nRunning start {RUN_NAME}, Time: {datetime.now()}\n##########################\n")
+print(
+    f"#########################\nRunning start {RUN_NAME}, Time: {datetime.now()}\n##########################\n"
+)
 
 strategy = PromptingFactory.get_prompting_class(STRATEGY)(
     model=ModelFactory.get_model_class(MODEL_NAME)(temperature=TEMPERATURE),
@@ -99,5 +94,6 @@ strategy = PromptingFactory.get_prompting_class(STRATEGY)(
 
 strategy.run()
 
-print(f"#########################\nRunning end {RUN_NAME}, Time: {datetime.now()}\n##########################\n")
-
+print(
+    f"#########################\nRunning end {RUN_NAME}, Time: {datetime.now()}\n##########################\n"
+)
